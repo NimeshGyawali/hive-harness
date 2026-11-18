@@ -16,7 +16,7 @@ you already have (Claude Code, Antigravity, Codex and others). Nothing is metere
 | Usage telemetry (PostHog) | Sent when built with a key, opt-out in Settings | Hard-disabled in `src/main/analytics.ts`; nothing is sent |
 | Auto-updater | Polls `chaitanyagiri/munder-difflin` releases | Polls this repo's releases only |
 | Remote model catalog and Settings card | Fetched from upstream `main` | Fetched from this repo's `docs/` (falls back to the built-in copy when the repo is private or offline) |
-| App identity | `Munder Difflin`, `in.munderdiffl.app` | `Hive Harness`, `com.nimeshgyawali.hiveharness` |
+| App identity | `Munder Difflin`, `in.munderdiffl.app` | `hiveharness`, `com.nimeshgyawali.hiveharness` |
 
 Because the app id changed, Hive Harness keeps its own settings and data folder and does not touch
 an existing Munder Difflin install.
