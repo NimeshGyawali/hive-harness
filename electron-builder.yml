@@ -133,7 +133,7 @@ mac:
   artifactName: hiveharness-${version}-mac-${arch}.${ext}
 
 dmg:
-  title: Munder Difflin ${version}
+  title: hiveharness ${version}
 
 # ---- Windows ----
 win:
@@ -149,7 +149,7 @@ nsis:
   perMachine: false
   allowToChangeInstallationDirectory: true
   artifactName: hiveharness-${version}-win-x64-setup.exe
-  shortcutName: Munder Difflin
+  shortcutName: hiveharness
 
 portable:
   artifactName: hiveharness-${version}-win-x64-portable.exe
