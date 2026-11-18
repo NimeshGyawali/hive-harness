@@ -29,6 +29,7 @@ import { SidebarSplitter } from '@/components/SidebarSplitter';
 import { acquireTerminal, notifyThemeChangeAll } from '@/components/terminalPool';
 import { FullscreenTerminal } from '@/components/FullscreenTerminal';
 import { TaskDetailOverlay } from '@/components/TaskDetailOverlay';
+import { HomeDashboard } from '@/components/HomeDashboard';
 import { IdePanel } from '@/ide/IdePanel';
 import { useHoldOptionToTalk } from '@/freeflow/holdOption';
 import brandLogo from '@brand/logo.png?url';
@@ -37,6 +38,14 @@ import brandLogo from '@brand/logo.png?url';
 declare const __APP_VERSION__: string;
 
 export function App() {
+  // hiveharness: Home dashboard vs the pixel office floor. Remembered per machine.
+  const [mainView, setMainViewState] = useState<'home' | 'office'>(() => {
+    try { return localStorage.getItem('hh.mainView') === 'office' ? 'office' : 'home'; } catch { return 'home'; }
+  });
+  const setMainView = (v: 'home' | 'office'): void => {
+    setMainViewState(v);
+    try { localStorage.setItem('hh.mainView', v); } catch { /* storage unavailable */ }
+  };
   // Point every {{godName}} string at the orchestrator's real, renameable name.
   useGodNameSync();
   // Mirror the document only for a user who has picked an RTL app language.
@@ -297,7 +306,7 @@ export function App() {
       >
         <img
           src={brandLogo}
-          alt="Munder Difflin"
+          alt="hiveharness"
           style={{ height: 20, width: 'auto', display: 'block' }}
         />
         {/* v0.3.7: the version is no longer inert text — it doubles as the
@@ -310,6 +319,25 @@ export function App() {
         }}>
           {config.autoMode ? 'auto mode on' : 'auto mode off'}
         </span>
+        <div className="cth-titlebar-nodrag" role="tablist" aria-label="Main view" style={{
+          display: 'inline-flex', padding: 2, gap: 2, borderRadius: 6,
+          boxShadow: 'inset 0 0 0 1px var(--cth-ink-300)', background: 'var(--cth-paper-100)'
+        }}>
+          {(['home', 'office'] as const).map((v) => (
+            <button
+              key={v}
+              role="tab"
+              aria-selected={mainView === v}
+              onClick={() => setMainView(v)}
+              style={{
+                border: 'none', borderRadius: 4, padding: '3px 12px', cursor: 'pointer',
+                fontFamily: 'var(--cth-font-ui)', fontSize: 12,
+                background: mainView === v ? 'var(--cth-lemon)' : 'transparent',
+                color: 'var(--cth-ink-900)'
+              }}
+            >{v === 'home' ? 'Home' : 'Office'}</button>
+          ))}
+        </div>
         {/* v0.3.4: theme + fullscreen live HERE (top right), not buried in the
             terminal header — and the theme darkens the whole app, terminals
             included (design/theme.ts + tokens.css dark block). */}
@@ -399,10 +427,10 @@ export function App() {
         gap: 0
       }}>
         <div style={{ flex: 1, minHeight: 0, minWidth: 0, position: 'relative' }}>
-          <OfficeFloor />
+          {mainView === 'home' ? <HomeDashboard /> : <OfficeFloor />}
           <MemoryPanel />
           {agentCount === 0 && godStatus === 'booting' && <MichaelBooting />}
-          {agentCount === 0 && godStatus !== 'booting' && (
+          {mainView === 'office' && agentCount === 0 && godStatus !== 'booting' && (
             <div style={{
               position: 'absolute', inset: 0,
               display: 'flex', alignItems: 'center', justifyContent: 'center',

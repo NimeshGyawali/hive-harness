@@ -56,6 +56,7 @@ import { initCompletionWatcher } from './realtimeCompletionWatcher';
 import type { TaskCard, InboxMessage } from './realtimeCompletionWatcher';
 import { TelemetryCollector } from './telemetry';
 import { CostLedgerTotals } from './costLifetime';
+import { TokenWindowFold } from './tokenWindows';
 import { analytics, isRendererMessageSurface } from './analytics';
 import type { SpawnFailReason } from './analytics';
 import { IntegrationBroker } from './integrationBroker';
@@ -3491,6 +3492,13 @@ ipcMain.handle('hive:setAgentHold', (_evt, id: unknown, hold: unknown) => {
 });
 ipcMain.handle('hive:board', () => hive.board());
 ipcMain.handle('hive:tasks', () => hive.tasks());
+// Home dashboard: token totals for today / 5 hours / 7 days and per-agent
+// one-minute buckets, folded incrementally from the cost ledger.
+const tokenWindows = new TokenWindowFold();
+ipcMain.handle('dashboard:tokens', () => {
+  const root = hive.enabled() ? hive.root() : null;
+  return tokenWindows.compute(root ? join(root, 'cost-ledger.jsonl') : null);
+});
 ipcMain.handle('hive:log', (_evt, n: unknown) => hive.logTail(typeof n === 'number' ? n : 200));
 ipcMain.handle('hive:memory', (_evt, id: unknown) => (typeof id === 'string' ? hive.memory(id) : ''));
 ipcMain.handle('hive:inbox', (_evt, id: unknown) => (typeof id === 'string' ? hive.inbox(id) : []));
