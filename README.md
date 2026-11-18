@@ -1,3 +1,5 @@
+> **Hive Harness fork** — see [FORK.md](FORK.md) for what changed from upstream Munder Difflin. Telemetry is disabled in this fork.
+
 <div align="center">
 
 <img src="./docs/logo.png" alt="Munder Difflin, the agent harness to run an office of your clones" width="180">

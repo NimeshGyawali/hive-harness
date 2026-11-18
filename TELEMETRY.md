@@ -1,5 +1,7 @@
 # Telemetry
 
+> **Hive Harness fork:** telemetry is permanently disabled (`src/main/analytics.ts`). Nothing in this document is sent. Kept for reference.
+
 Munder Difflin collects a small set of **anonymous** usage events so we can
 understand adoption (how many people launch the app, whether they get a first
 agent running, which features get used) and make the product better. This

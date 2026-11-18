@@ -36,6 +36,9 @@ import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { PostHog } from 'posthog-node';
 
+/** Hive Harness fork: anonymous usage telemetry is disabled outright. */
+const HIVE_TELEMETRY_DISABLED = true;
+
 // Injected by electron-vite `define` (electron.vite.config.ts) from the
 // POSTHOG_KEY / POSTHOG_HOST env at BUILD time. Empty in dev/fork builds.
 declare const __POSTHOG_KEY__: string;
@@ -188,7 +191,9 @@ export class Analytics {
       os: process.platform,
       arch: process.arch
     };
-    if (!__POSTHOG_KEY__ || dntSet()) return; // stay dark: no client, no id file
+    // Hive Harness fork: telemetry is permanently off. No client, no install id,
+    // nothing leaves the machine. (Upstream gated this on a build-time key.)
+    if (HIVE_TELEMETRY_DISABLED || !__POSTHOG_KEY__ || dntSet()) return;
     try {
       this.distinctId = this.loadOrMintInstallId(opts.stateDir);
       this.client = new PostHog(__POSTHOG_KEY__, {
